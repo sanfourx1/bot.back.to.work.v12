@@ -55,11 +55,7 @@ client.on('messageCreate', async (message) => {
         await message.react(userEmojis.get(message.author.id));
     }
 
-    // Auto-reply if mentioned
-    if (message.mentions.has(client.user)) {
-        await message.reply(`3endek ratakel ma3endekx maratakelx`);
-    }
-});
+ 
 
 client.on('messageCreate', async (message) => {
     if (message.content === '!3aweni') {
