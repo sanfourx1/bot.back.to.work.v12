@@ -1,10 +1,13 @@
 require('dotenv').config(); // Load .env variables
 const { joinVoiceChannel, getVoiceConnection } = require('@discordjs/voice');
 const { Client } = require('discord.js-selfbot-v13');
-const client = new Client({ checkUpdate: false });
+const client = new Client({
+    checkUpdate: false,
+    intents: ["GUILDS", "GUILD_MESSAGES", "MESSAGE_CONTENT"]
+});
 
 const OWNER_ID = process.env.OWNER_ID;
-const AUTO_REACT_IDS = (process.env.AUTO_REACT_IDS || '').split(',').filter(id => id);
+const AUTO_REACT_IDS = (process.env.AUTO_REACT_IDS || '').split(',').map(id => id.trim()).filter(Boolean);
 
 // Store user-emoji pairs
 const userEmojis = new Map();
@@ -31,11 +34,15 @@ const autoReplies = {
 };
 
 client.on('messageCreate', async (message) => {
-    if (message.author.id === client.user.id) return;
+    if (message.author.id === client.user.id) return; // Ignore bot's own messages
 
     // Auto-react to specified IDs
     if (message.author.id === OWNER_ID || AUTO_REACT_IDS.includes(message.author.id)) {
-        await message.react('🫦');
+        try {
+            await message.react('🫦');
+        } catch (error) {
+            console.error(`❌ Failed to react in ${message.guild?.name || 'DMs'}:`, error);
+        }
     }
 
     // Auto-reply based on specific keywords
@@ -47,7 +54,11 @@ client.on('messageCreate', async (message) => {
 
     // Auto-react to specific users
     if (userEmojis.has(message.author.id)) {
-        await message.react(userEmojis.get(message.author.id));
+        try {
+            await message.react(userEmojis.get(message.author.id));
+        } catch (error) {
+            console.error(`❌ Failed to react to ${message.author.tag}:`, error);
+        }
     }
 
     // Commands for managing user-emoji list
@@ -78,14 +89,13 @@ client.on('messageCreate', async (message) => {
             if (userEmojis.size === 0) {
                 await message.channel.send("⚠️ لا يوجد مستخدمون في قائمة التفاعل التلقائي.");
             } else {
-                const userList = Array.from(userEmojis.entries())
-                    .map(([userId, emoji]) => `<@${userId}> → ${emoji}`);
-                await message.channel.send(`✅ قائمة المستخدمين وايموجياتهم:\n` + userList.join("\n"));
+                const userList = [...userEmojis.entries()]
+                    .map(([userId, emoji]) => `<@${userId}> → ${emoji}`)
+                    .join("\n");
+                await message.channel.send(`✅ قائمة المستخدمين وايموجياتهم:\n${userList}`);
             }
         }
     }
-
-  
 
     // Command to make the bot join a VC channel (e.g., !ajivc [channel_id])
     if (message.content.startsWith('!ajivc')) {
@@ -93,7 +103,7 @@ client.on('messageCreate', async (message) => {
             const args = message.content.split(' ')[1]; // Get the channel ID
             if (args) {
                 const channel = message.guild.channels.cache.get(args);
-                if (channel && channel.isVoice()) {
+                if (channel && channel.type === 2) { // Check if it's a voice channel
                     try {
                         joinVoiceChannel({
                             channelId: channel.id,
