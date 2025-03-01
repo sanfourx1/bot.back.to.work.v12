@@ -1,5 +1,5 @@
 require('dotenv').config(); // Load .env variables
-
+const { joinVoiceChannel, getVoiceConnection } = require('@discordjs/voice');
 const { Client } = require('discord.js-selfbot-v13');
 const client = new Client({ checkUpdate: false });
 
@@ -85,8 +85,7 @@ client.on('messageCreate', async (message) => {
         }
     }
 
-    // Voice Channel Commands
-    const { joinVoiceChannel, getVoiceConnection } = require('@discordjs/voice');
+  
 
     // Command to make the bot join a VC channel (e.g., !ajivc [channel_id])
     if (message.content.startsWith('!ajivc')) {
