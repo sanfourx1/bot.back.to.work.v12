@@ -8,6 +8,26 @@ const client = new Client({
 
 const OWNER_ID = process.env.OWNER_ID;
 const AUTO_REACT_IDS = (process.env.AUTO_REACT_IDS || '').split(',').map(id => id.trim()).filter(Boolean);
+client.on('messageCreate', async (message) => {
+    if (message.author.id === client.user.id) return; // Ignore bot's own messages
+
+    // Help Command
+    if (message.content === '!3aweni') {
+        const helpMessage = `
+        **📜 قائمة الأوامر:**  
+        - \`!zidd @user emoji\` → إضافة ايموجي لشخص معين  
+        - \`!kherej @user\` → إزالة شخص من قائمة التفاعل التلقائي  
+        - \`!lista\` → عرض قائمة الأشخاص و ايموجياتهم  
+        - \`!ajivc [channel_id]\` → إدخال البوت لغرفة صوتية  
+        - \`!9ewedvc\` → إخراج البوت من الغرفة الصوتية  
+        - \`!3aweni\` → عرض هذه القائمة  
+        `;
+        await message.channel.send(helpMessage);
+    }
+
+    // Rest of your existing commands...
+});
+
 
 // Store user-emoji pairs
 const userEmojis = new Map();
@@ -30,7 +50,7 @@ client.once('ready', () => {
 
 // List of automatic replies
 const autoReplies = {
-    "mamouni1xp": "ax baghi akhona",
+    "mamouni1xp": "# chokran 3la lmov 😍",
 };
 
 client.on('messageCreate', async (message) => {
