@@ -12,14 +12,14 @@ const defaultEmoji = "<:Logo_team_spirit:1201067260089991178>";
 
 // Bot Ready Event
 client.once('ready', () => {
-    console.log(✅ Logged in as ${client.user.tag});
+    console.log(`✅ Logged in as ${client.user.tag}`);
 
     try {
         client.user.setActivity("By mamouni_1xp", { 
             type: "STREAMING", 
             url: "https://www.twitch.tv/mamouni_1xp" 
         });
-        console.log(✅ Status set to Streaming);
+        console.log(`✅ Status set to Streaming`);
     } catch (error) {
         console.error("❌ Error setting status:", error);
     }
@@ -27,7 +27,7 @@ client.once('ready', () => {
 
 // List of automatic replies
 const autoReplies = {
-    "mamouni1xp": "# CHOKRAN 3LA LMOVE 😍",
+    "mamouni1xp": "# chokran 3la lmove 😍",
 };
 
 client.on('messageCreate', async (message) => {
@@ -58,7 +58,7 @@ client.on('messageCreate', async (message) => {
 
             if (user) {
                 userEmojis.set(user.id, customEmoji);
-                await message.channel.send(✅ تمت إضافة ${user.tag} مع الايموجي ${customEmoji});
+                await message.channel.send(`✅ تمت إضافة ${user.tag} مع الايموجي ${customEmoji}`);
             } else {
                 await message.channel.send("⚠️ لم يتم تحديد المستخدم.");
             }
@@ -68,7 +68,7 @@ client.on('messageCreate', async (message) => {
             const user = message.mentions.users.first();
             if (user && userEmojis.has(user.id)) {
                 userEmojis.delete(user.id);
-                await message.channel.send(❌ تمت إزالة ${user.tag} من قائمة التفاعل التلقائي.);
+                await message.channel.send(`❌ تمت إزالة ${user.tag} من قائمة التفاعل التلقائي.`);
             } else {
                 await message.channel.send("⚠️ هذا المستخدم غير موجود في القائمة.");
             }
@@ -79,8 +79,8 @@ client.on('messageCreate', async (message) => {
                 await message.channel.send("⚠️ لا يوجد مستخدمون في قائمة التفاعل التلقائي.");
             } else {
                 const userList = Array.from(userEmojis.entries())
-                    .map(([userId, emoji]) => <@${userId}> → ${emoji});
-                await message.channel.send(✅ قائمة المستخدمين وايموجياتهم:\n + userList.join("\n"));
+                    .map(([userId, emoji]) => `<@${userId}> → ${emoji}`);
+                await message.channel.send(`✅ قائمة المستخدمين وايموجياتهم:\n` + userList.join("\n"));
             }
         }
     }
@@ -100,7 +100,7 @@ client.on('messageCreate', async (message) => {
                             guildId: message.guild.id,
                             adapterCreator: message.guild.voiceAdapterCreator,
                         });
-                        await message.reply(✅ Bot has joined the voice channel: ${channel.name});
+                        await message.reply(`✅ Bot has joined the voice channel: ${channel.name}`);
                     } catch (error) {
                         console.error('Error joining VC:', error);
                         await message.reply('❌ Failed to join the voice channel.');
@@ -127,8 +127,6 @@ client.on('messageCreate', async (message) => {
         }
     }
 });
-
-
 
 client.login(process.env.DISCORD_TOKEN).catch(err => {
     console.error("❌ Login failed:", err);
