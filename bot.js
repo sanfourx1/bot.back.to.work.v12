@@ -33,10 +33,7 @@ const autoReplies = {
 client.on('messageCreate', async (message) => {
     if (message.author.id === client.user.id) return;
 
-    // Auto-react to specified IDs
-    if (message.author.id === OWNER_ID || AUTO_REACT_IDS.includes(message.author.id)) {
-        await message.react('🫦');
-    }
+   
 
     // Auto-reply based on specific keywords
     for (const [trigger, reply] of Object.entries(autoReplies)) {
